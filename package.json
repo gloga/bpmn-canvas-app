@@ -1,15 +1,26 @@
-
 {
   "name": "bpmn-canvas-app",
-  "title": "HTML Canvas app for process modelling (BPMN specification), and process analysis Edit
-Add topics
-",
-  "author": "Gabriel Glogoški",
-  "license": "MIT",
+  "version": "1.0.0",
+  "description": "HTML Canvas app for process modelling (BPMN specification), and process analysis Edit",
+  "main": "./dist/assets/js/all.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gloga/bpmn-canvas-app.git"
+    "url": "git+https://github.com/gloga/bpmn-canvas-app.git"
   },
+  "keywords": [
+    "canvas",
+    "bpmn"
+  ],
+  "author": "Gabriel Glogoški",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gloga/bpmn-canvas-app/issues"
+  },
+  "homepage": "https://github.com/gloga/bpmn-canvas-app#readme",
+
   "devDependencies": {
     "browser-sync": "^2.18.11",
     "gulp": "^3.9.0",
@@ -17,7 +28,7 @@ Add topics
     "gulp-load-plugins": "^1.2.4",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.1",
-    "gulp-uglify": "^1.5.1",
+    "gulp-uglify": "^1.5.1"
   },
   "dependencies": {}
 }

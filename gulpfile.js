@@ -1,50 +1,175 @@
-// Include gulp
-var gulp = require('gulp');
 
-// Run commands
-var exec = require('child_process').exec;
+var autoPrefixBrowserList = ['last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'];
 
-// Automatically load gulp plugins from package.json
-var  plugins = require('gulp-load-plugins')({
-        pattern: '*', // by default, it only loads plugins prefixed "gulp-"
+var gulp        = require('gulp');
+
+/** Helps with graceful failures as you work */
+
+var gutil       = require('gulp-util');
+
+/**
+ * Concatenates the JavaScript and CSS together in a single
+ * file so you only need one link/script to use in your HTML
+ */
+
+var concat      = require('gulp-concat');
+
+/** Makes JavaScript as ugly as your mother is. Mic drop! */
+
+var uglify      = require('gulp-uglify');
+
+/** Efficient and fast SASS library with no Ruby dependency */
+
+var sass        = require('gulp-sass');
+
+/** Adds source maps so you can debug your SCSS with ease */
+
+var sourceMaps  = require('gulp-sourcemaps');
+
+/** Minifies your images */
+
+var imagemin    = require('gulp-imagemin');
+
+/** Minifies css */
+
+var minifyCSS   = require('gulp-clean-css');
+
+/** Keep multiple browsers & devices in sync when building websites*/
+
+var browserSync = require('browser-sync').create();
+
+/** Adds browser prefixes to make CSS development faster */
+
+var autoprefixer = require('gulp-autoprefixer');
+
+/** Organizes and runs the build tasks in a proper sequence */
+
+var gulpSequence = require('gulp-sequence').use(gulp);
+
+/** Cleaner and directory builder */
+
+var shell       = require('gulp-shell');
+
+/** Prevent pipe breaking caused by errors from gulp plugins */
+
+var plumber     = require('gulp-plumber');
+
+/** Renames files E.g. style.css -> style.min.css */
+
+var rename      = require('gulp-rename');
+
+/** Merge media queries */
+
+var mmq         = require('gulp-merge-media-queries');
+
+/** Check if src file is newer than DEST */
+
+var newer = require('gulp-newer');
+
+gulp.task('browserSync', function() {
+  fs = require('fs');
+  projectURL = fs.readFileSync('../devhost.txt', 'utf8');
+  browserSync.init({
+    files: ['**/*.html', '*.html'],
+    proxy: projectURL,
+    options: {
+      reloadDelay: 250
+    },
+    notify: false
+  });
 });
 
-// Compile Sass
-gulp.task('sass', function() {
-    return gulp.src('./src/**/*.scss')
-        .pipe(plugins.sass())
-        .pipe(plugins.concat('all.min.css'))
-        .pipe(gulp.dest('dist/assets/css'))
-        .pipe(plugins.browserSync.stream());
-});
-
-// Image Assets
 gulp.task('images', function() {
-    return gulp.src('./src/**/*.+(jpg|jpeg|gif|png|svg)')
-        .pipe(plugins.rename({dirname: ''}))
-        .pipe(gulp.dest('dist/assets/img'))
-        .pipe(plugins.browserSync.stream());
+  gulp.src(['assets/img/raw/**/*.{png,jpg,gif,svg}'])
+  .pipe(plumber())
+  .pipe(newer('assets/img/'))
+  .pipe(imagemin({ optimizationLevel: 5, progressive: true, interlaced: true }))
+  .pipe(gulp.dest('assets/img/'))
+  .pipe(browserSync.stream());
 });
 
-// Minify JS
-gulp.task('scripts', function() {
-    return gulp.src(['./src/**/*.js'])
-        .pipe(plugins.uglify())
-        .pipe(plugins.concat('all.min.js'))
-        .pipe(gulp.dest('dist/assets/js'))
-        .pipe(plugins.browserSync.stream());
+gulp.task('scripts-custom', function() {
+  gulp.src([
+    'assets/js/custom/wrappers/wrapper-open.js',
+    'assets/js/custom/modules/**/*.js',
+    'assets/js/custom/init.js',
+    'assets/js/custom/wrappers/wrapper-close.js'
+  ])
+  .pipe(plumber())
+  .pipe(concat('custom.js'))
+  .on('error', gutil.log)
+  .pipe(gulp.dest('assets/js/'))
+  .pipe( rename( {
+    basename: 'custom',
+    suffix: '.min'
+  }))
+  .pipe( uglify() )
+  .pipe( gulp.dest('assets/js/'))
+  .pipe(browserSync.stream());
 });
 
-// Watch Files For Changes
-gulp.task('watch', function() {
-    // Static gulp server
-    plugins.browserSync.init({
-        server: "./dist"
-    });
-    gulp.watch('./src/assets/js/*.js', ['scripts']);
-    gulp.watch('./src/assets/css/**/*.scss', ['sass']);
-    gulp.watch('./src/*.html');
+gulp.task('scripts-vendors', function() {
+  gulp.src('assets/js/vendors/**/*.js')
+  .pipe(plumber())
+  .pipe(concat('vendors.js'))
+  .on('error', gutil.log)
+  .pipe(gulp.dest('assets/js/'))
+  .pipe( rename( {
+    basename: 'vendors',
+    suffix: '.min'
+  }))
+  .pipe( uglify() )
+  .pipe( gulp.dest('assets/js/'))
+  .pipe(browserSync.stream());
 });
 
-// Default Task
-gulp.task('default', ['sass', 'scripts', 'watch','images']);
+gulp.task('styles', function() {
+  gulp.src('assets/css/style.scss')
+  .pipe(plumber({
+    errorHandler: function (err) {
+      console.log(err);
+      this.emit('end');
+    }
+  }))
+  .pipe(sourceMaps.init())
+  .pipe(sass({
+    errLogToConsole: true,
+    outputStyle: 'compact',
+    precision: 10
+  }))
+  .pipe(autoprefixer({
+    browsers: autoPrefixBrowserList,
+    cascade:  true
+  }))
+  .on('error', gutil.log)
+  .pipe(concat('main.css'))
+  .pipe(sourceMaps.write())
+  .pipe(gulp.dest('./'))
+  .pipe(browserSync.stream()) /** inject if main.css is in use */
+  .pipe( rename( {
+    basename: 'main',
+    suffix: '.min'
+  }))
+  .pipe(minifyCSS())
+  .pipe( gulp.dest('./'))
+  .pipe(browserSync.stream()); /** inject if theme.min.css is in use */
+});
+
+/**
+ * NOTE we watch HTML files using BrowserSync.init now
+ * so there is no HTML watch task
+ */
+
+gulp.task('default', ['browserSync', 'scripts-custom', 'scripts-vendors', 'styles'], function() {
+    gulp.watch('assets/js/custom/**/*.js', ['scripts-custom']);
+    gulp.watch('assets/js/vendors/**/*.js', ['scripts-vendors']);
+    gulp.watch('assets/css/**/*.{css,scss}', ['styles']);
+    gulp.watch('assets/img/raw/*', ['images']);
+});
+
+gulp.task( 'production', [
+  'styles',
+  'scripts-custom',
+  'scripts-vendors',
+  'images'
+]);

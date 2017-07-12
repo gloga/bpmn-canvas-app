@@ -58,4 +58,9 @@ typings/
 .env
 
 # All compiled assets
-dist/assets/
+main.css
+main.min.css
+assets/js/custom.js
+assets/js/custom.min.js
+assets/js/vendors.js
+assets/js/vendors.min.js

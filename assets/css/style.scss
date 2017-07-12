@@ -1,0 +1,27 @@
+/**
+ * [SASS variables setup]
+ * Set up colors, spacing..
+*/
+
+@import 'variables';
+
+/**
+ * [Vendor imports]
+ * Do not modify.
+ */
+
+@import 'vendor/normalize';
+
+/**
+ * [Base]
+ * Native html tag foundation - no classes here. Modify this if you need.
+ */
+
+// @import 'base';
+
+/**
+ * [Components]
+ * Building blocks for your website.
+ */
+
+@import 'component';

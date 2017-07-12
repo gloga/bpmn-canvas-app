@@ -1,5 +1,7 @@
 (function () {
 
-  console.log('yo');
+  window.addEventListener('load', function () {
+    
+  });
 
 })();

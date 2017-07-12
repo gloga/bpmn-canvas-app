@@ -108,6 +108,23 @@ gulp.task('scripts-custom', function() {
   .pipe(browserSync.stream());
 });
 
+gulp.task('scripts-canvas', function() {
+  gulp.src([
+    'assets/js/canvas/**/*.js',
+  ])
+  .pipe(plumber())
+  .pipe(concat('canvas.js'))
+  .on('error', gutil.log)
+  .pipe(gulp.dest('assets/js/'))
+  .pipe( rename( {
+    basename: 'canvas',
+    suffix: '.min'
+  }))
+  .pipe( uglify() )
+  .pipe( gulp.dest('assets/js/'))
+  .pipe(browserSync.stream());
+});
+
 gulp.task('scripts-vendors', function() {
   gulp.src('assets/js/vendors/**/*.js')
   .pipe(plumber())
@@ -160,8 +177,9 @@ gulp.task('styles', function() {
  * so there is no HTML watch task
  */
 
-gulp.task('default', ['browserSync', 'scripts-custom', 'scripts-vendors', 'styles'], function() {
+gulp.task('default', ['browserSync', 'scripts-custom', 'scripts-canvas', 'scripts-vendors', 'styles'], function() {
     gulp.watch('assets/js/custom/**/*.js', ['scripts-custom']);
+    gulp.watch('assets/js/canvas/**/*.js', ['scripts-canvas']);
     gulp.watch('assets/js/vendors/**/*.js', ['scripts-vendors']);
     gulp.watch('assets/css/**/*.{css,scss}', ['styles']);
     gulp.watch('assets/img/raw/*', ['images']);
@@ -170,6 +188,7 @@ gulp.task('default', ['browserSync', 'scripts-custom', 'scripts-vendors', 'style
 gulp.task( 'production', [
   'styles',
   'scripts-custom',
+  'scripts-canvas',
   'scripts-vendors',
   'images'
 ]);

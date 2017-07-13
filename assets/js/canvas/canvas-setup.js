@@ -13,10 +13,10 @@ function onResize(event) {
 function onMouseDown(event) {
   console.log(event.downPoint.x);
   console.log(event.downPoint.y);
-  rectangle.x = event.downPoint.x;
-  rectangle.y = event.downPoint.y;
-  rectangle.width = 200;
-  rectangle.height = 200;
+  rectangle.width = 100;
+  rectangle.height = 50;
+  rectangle.x = event.downPoint.x - ( rectangle.width / 2);
+  rectangle.y = event.downPoint.y - ( rectangle.height / 2);
 
 	// Add a segment to the path at the position of the mouse:
   path = new Path.RoundRectangle(rectangle, cornerSize);

@@ -1,0 +1,23 @@
+.options-menu {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 50%;
+
+  transform: translateX(-50%);
+  &-wrap {
+    display: flex;
+  }
+}
+.elements-menu {
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 0;
+
+  transform: translateY(-50%);
+  &-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+}

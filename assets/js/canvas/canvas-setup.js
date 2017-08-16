@@ -1,3 +1,5 @@
+tool.minDistance = 100;
+
 function selectPath(element, event) {
   element.selected = true;
 }

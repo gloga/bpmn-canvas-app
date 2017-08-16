@@ -9,19 +9,21 @@ function drawActivity(cursorX,cursorY){
     width: activityWidth,
     height: activityHeight,
     radius: 10,
+    strokeWidth: 2,
     strokeColor: 'blue',
     fillColor: 'white',
     userName: 'element',
+    name : 'activity',
     type : 'activity'
   });
-  var connectors = [];
 
   var connector1 = new Path.Circle({
     radius: 3,
     center: [cursorX + ( activityWidth / 2 ), cursorY],
     fillColor: 'grey',
     visible: false,
-    type: 'connector'
+    type: 'connector',
+    name: 'connector'
   });
 
   var connector2 = connector1.clone();
@@ -38,18 +40,33 @@ function drawActivity(cursorX,cursorY){
 
   activity.addChildren([activitySymbol, connector1, connector2, connector3, connector4]);
 
+  tool.minDistance = 1000;
+
   activity.onMouseMove = function (event) {
-    var conector = this.hitTestAll(event.point, {});
-    console.log(conector);
-  }
-  activity.onMouseEnter = function (event) {
 
   }
+
+  activity.onMouseEnter = function (event) {
+    this.children.forEach(function (child) {
+      if(child.name.indexOf('connector') !== -1){
+        child.visible = true;
+      }
+    });
+  }
   activity.onMouseLeave = function (event) {
-    // unselectPath(this, event);
+    this.children.forEach(function (child) {
+      if(child.name.indexOf('connector') !== -1){
+        child.visible = false;
+      }
+    });
   }
 
   activity.onMouseDrag = function (event) {
+    this.children.forEach(function (child) {
+      var hit = child.hitTestAll(event.point, { fillColor: 'grey' });
+        // console.log(hit);
+    });
+
     movePath(this, event);
   }
 

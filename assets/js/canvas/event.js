@@ -2,10 +2,12 @@ function drawEvent(cursorX,cursorY){
   var eventSymbol = new Path.Circle({
     radius: 20,
     center: [cursorX, cursorY],
+    strokeWidth: 2,
     strokeColor: 'green',
     fillColor: 'white',
     userName: 'element',
-    type : 'event'
+    type : 'event',
+    name : 'event'
   });
 
   eventSymbol.onMouseEnter = function (event) {

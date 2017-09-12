@@ -4,7 +4,7 @@ function getChildren(n, skipMe){
        if ( n.nodeType == 1 && n != skipMe)
           r.push( n );
     return r;
-};
+}
 
 function getSiblings(n) {
     return getChildren(n.parentNode.firstChild, n);

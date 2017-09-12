@@ -52,7 +52,7 @@ function drawActivity(cursorX,cursorY){
         child.visible = true;
       }
     });
-  }
+  };
   activity.onMouseLeave = function (event) {
     this.children.forEach(function (child) {
       if(child.name.indexOf('connector') !== -1){

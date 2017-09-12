@@ -1,7 +1,3 @@
-(function () {
-
-  window.addEventListener('load', function () {
-    interactions();
-  });
-
-})();
+window.addEventListener('load', function () {
+  interactions();
+});

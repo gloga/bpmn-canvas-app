@@ -1,14 +1,11 @@
-
-
-$body-font-size: 1.5rem;
-$body-line-height: 1.5;
+$body-font-size: 1.4rem;
+$body-line-height: 1.4;
 
 
 /** [Color setup] */
 
 $typography-base-color: #494349;
 $border-base-color: #1e1e1e;
-
 $color-0: #2492a9;
 $color-1: darken($color-0, 10%);
 $color-2: darken($color-1, 10%);
@@ -17,6 +14,5 @@ $color-4: darken($color-3, 10%);
 $color-5: #1e1e1e;
 $color-6: lighten($color-5, 10%);
 $color-7: lighten($color-6, 10%);
-
 $w: #fff;
 $b: #000;

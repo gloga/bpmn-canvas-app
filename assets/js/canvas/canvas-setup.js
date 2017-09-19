@@ -1,10 +1,17 @@
+elementType = '';
+
 tool.minDistance = 10;
+
+tool.onMouseDrag = function(event){
+  // console.log(project.view);
+  // console.log(event);
+};
+
 function onMouseMove (event){
   // console.log(event.point);
 }
-tool.onMouseDrag = function(event){
-  console.log(event);
-};
+
+
 window.addEventListener('wheel', function(e){
   e.preventDefault();
   var scrollDistance = e.deltaY;
@@ -15,5 +22,17 @@ window.addEventListener('wheel', function(e){
     project.view.zoom += 0.02;
   }
 });
+var eventOptions = document.querySelectorAll('.element-option');
 
-console.log(project.view);
+eventOptions.forEach(function(eventOption){
+  eventOption.onclick = function (){
+    elementType = this.getAttribute('data-type');
+  };
+});
+
+project.view.onMouseUp = function(event){
+  if(elementType === 'event'){
+    drawEvent(event.point.x, event.point.y);
+    elementType = '';
+  }
+};

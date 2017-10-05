@@ -3,7 +3,7 @@ elementType = '';
 tool.minDistance = 10;
 
 tool.onMouseDrag = function(event){
-  // console.log(project.view);
+// console.log(project.view);
   // console.log(event);
 };
 
@@ -22,6 +22,8 @@ window.addEventListener('wheel', function(e){
     project.view.zoom += 0.02;
   }
 });
+
+
 var eventOptions = document.querySelectorAll('.element-option');
 
 eventOptions.forEach(function(eventOption){
@@ -35,4 +37,9 @@ project.view.onMouseUp = function(event){
     drawEvent(event.point.x, event.point.y);
     elementType = '';
   }
+  else if(elementType === 'activity'){
+    drawActivity(event.point.x, event.point.y);
+    elementType = '';
+  }
+  // console.log(project.activeLayer.children);
 };

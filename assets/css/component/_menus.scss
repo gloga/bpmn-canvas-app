@@ -8,6 +8,11 @@
   &-wrap {
     display: flex;
   }
+  .canvas-option {
+    padding: 2px 4px;
+
+    cursor: pointer;
+  }
 }
 .elements-menu {
   position: fixed;
@@ -19,5 +24,10 @@
   &-wrap {
     display: flex;
     flex-direction: column;
+  }
+  .element-option {
+    padding: 2px 4px;
+
+    cursor: pointer;
   }
 }

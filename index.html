@@ -8,25 +8,26 @@
   <title>Document</title>
 </head>
 <body>
-  <header class="options-menu">
+  <div class="options-menu">
     <div class="options-menu-wrap">
       <div class="canvas-option">New</div>
       <div class="canvas-option">Save</div>
     </div>
-  </header>
-  <aside class="elements-menu">
+  </div>
+  <div class="elements-menu">
     <div class="elements-menu-wrap">
-      <div class="element" data-trigger="event">Event</div>
-      <div class="element" data-trigger="activity">Activity</div>
+      <div class="element-option" data-type="event">Event</div>
+      <div class="element-option" data-type="activity">Activity</div>
+      <div class="element-option" data-type="gateway">Gateway</div>
+      <div class="element-option" data-type="pool">Pool</div>
     </div>
-  </aside>
-  <main>
+  </div>
+  <div>
     <div class="canvas-container" id="main-container">
       <canvas id="myCanvas" data-paper-resize="true"></canvas>
     </div>
-  </main>
+  </div>
   <script async type="text/javascript" src="/assets/js/vendors.js"></script>
   <script type="text/paperscript" src="/assets/js/canvas.js" data-paper-canvas="myCanvas"></script>
-  <script type="text/javascript" src="/assets/js/custom.js"></script>
 </body>
 </html>

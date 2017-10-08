@@ -88,29 +88,9 @@ gulp.task('images', function() {
   .pipe(browserSync.stream());
 });
 
-gulp.task('scripts-custom', function() {
-  gulp.src([
-    'assets/js/custom/wrappers/wrapper-open.js',
-    'assets/js/custom/modules/**/*.js',
-    'assets/js/custom/init.js',
-    'assets/js/custom/wrappers/wrapper-close.js'
-  ])
-  .pipe(plumber())
-  .pipe(concat('custom.js'))
-  .on('error', gutil.log)
-  .pipe(gulp.dest('assets/js/'))
-  .pipe( rename( {
-    basename: 'custom',
-    suffix: '.min'
-  }))
-  .pipe( uglify() )
-  .pipe( gulp.dest('assets/js/'))
-  .pipe(browserSync.stream());
-});
-
 gulp.task('scripts-canvas', function() {
   gulp.src([
-    'assets/js/canvas/**/*.js',
+    'assets/js/custom/**/*.js',
   ])
   .pipe(plumber())
   .pipe(concat('canvas.js'))
@@ -177,9 +157,8 @@ gulp.task('styles', function() {
  * so there is no HTML watch task
  */
 
-gulp.task('default', ['browserSync', 'scripts-custom', 'scripts-canvas', 'scripts-vendors', 'styles'], function() {
-    gulp.watch('assets/js/custom/**/*.js', ['scripts-custom']);
-    gulp.watch('assets/js/canvas/**/*.js', ['scripts-canvas']);
+gulp.task('default', ['browserSync', 'scripts-canvas', 'scripts-vendors', 'styles'], function() {
+    gulp.watch('assets/js/custom/**/*.js', ['scripts-canvas']);
     gulp.watch('assets/js/vendors/**/*.js', ['scripts-vendors']);
     gulp.watch('assets/css/**/*.{css,scss}', ['styles']);
     gulp.watch('assets/img/raw/*', ['images']);
@@ -187,7 +166,6 @@ gulp.task('default', ['browserSync', 'scripts-custom', 'scripts-canvas', 'script
 
 gulp.task( 'production', [
   'styles',
-  'scripts-custom',
   'scripts-canvas',
   'scripts-vendors',
   'images'

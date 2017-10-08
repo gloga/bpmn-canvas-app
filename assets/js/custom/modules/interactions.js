@@ -1,4 +1,4 @@
-function interactions (){
+(function() {
   var eventTriggers = document.querySelectorAll('.element');
 
   eventTriggers.forEach(function(trigger){
@@ -19,4 +19,4 @@ function interactions (){
       trigger.classList.remove('selected');
     });
   });
-}
+}());

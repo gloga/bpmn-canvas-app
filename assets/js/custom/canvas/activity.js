@@ -1,11 +1,10 @@
-var activityGroup = new Group();
 
 function drawActivity(x, y){
-  var activityWidth = 100;
+	var activityWidth = 100;
   var activityHeight = 50;
 
   var activitySymbol = new Path.Rectangle({
-    width: activityWidth,
+		width: activityWidth,
     height: activityHeight,
     strokeWidth: 2,
     strokeColor: 'black',
@@ -16,8 +15,9 @@ function drawActivity(x, y){
 
   activityConnectors = makeConnectors(x, y, activityWidth, activityHeight);
 
+	var activityGroup = new Group();
   activityGroup.addChildren([
-    activitySymbol,
+		activitySymbol,
     activityConnectors
   ]);
 

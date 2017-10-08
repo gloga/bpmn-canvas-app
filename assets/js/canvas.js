@@ -1,11 +1,10 @@
-var activityGroup = new Group();
 
 function drawActivity(x, y){
-  var activityWidth = 100;
+	var activityWidth = 100;
   var activityHeight = 50;
 
   var activitySymbol = new Path.Rectangle({
-    width: activityWidth,
+		width: activityWidth,
     height: activityHeight,
     strokeWidth: 2,
     strokeColor: 'black',
@@ -16,8 +15,9 @@ function drawActivity(x, y){
 
   activityConnectors = makeConnectors(x, y, activityWidth, activityHeight);
 
+	var activityGroup = new Group();
   activityGroup.addChildren([
-    activitySymbol,
+		activitySymbol,
     activityConnectors
   ]);
 
@@ -33,115 +33,114 @@ function drawActivity(x, y){
 //   this.children[1].visible = false;
 // };
 
-elementType = '';
+var elementType = '';
 
 tool.minDistance = 10;
 
-tool.onMouseDrag = function(event){
-  // console.log(project.view);
-  // console.log(event);
-};
+// tool.onMouseDrag = function(event){
+//   // console.log(project.view);
+// 	// console.log(event);
+// };
 
-function onMouseMove (event){
-  // console.log(event.point);
-}
+// function onMouseMove (event){
+//   // console.log(event.point);
+// }
 
 
-window.addEventListener('wheel', function(e){
-  e.preventDefault();
-  var scrollDistance = e.deltaY;
-  if(scrollDistance > 0){
-    project.view.zoom -= 0.02;
-  }
-  else{
-    project.view.zoom += 0.02;
-  }
+window.addEventListener('wheel', function (e) {
+	e.preventDefault();
+
+	var scrollDistance = e.deltaY;
+	if (scrollDistance > 0) {
+		project.view.zoom -= 0.02;
+	} else {
+		project.view.zoom += 0.02;
+	}
 });
 
 
 var eventOptions = document.querySelectorAll('.element-option');
 
-eventOptions.forEach(function(eventOption){
-  eventOption.onclick = function (){
-    elementType = this.getAttribute('data-type');
-  };
+eventOptions.forEach(function (eventOption) {
+	eventOption.onclick = function () {
+		elementType = this.getAttribute('data-type');
+	};
 });
 
-project.view.onMouseUp = function(event){
-  if(elementType === 'event'){
-    drawEvent(event.point.x, event.point.y);
-    elementType = '';
-  }
-  else if(elementType === 'activity'){
-    drawActivity(event.point.x, event.point.y);
-    elementType = '';
-  }
-  // console.log(project.activeLayer.children);
+project.view.onMouseUp = function (event) {
+	if (elementType === 'event') {
+		drawEvent(event.point.x, event.point.y);
+		elementType = '';
+	} else if (elementType === 'activity') {
+		drawActivity(event.point.x, event.point.y);
+		elementType = '';
+	}
+	console.log(project.activeLayer.children);
 };
 
-var connectorGroup = new Group({
-  // visible: false
-});
-
 function makeConnectors (x, y, width, height){
-  var connectorSymbol = new Path.Circle({
-    radius: 4,
-    fillColor: 'grey',
-    type: 'connector',
-  });
+	var connectorSymbol = new Path.Circle({
+		radius: 4,
+		fillColor: 'grey',
+		type: 'connector',
+	});
 
-  var connectorPoints = [
-    new Point(x + (width / 2), y),
-    new Point(x, y + (height / 2)),
-    new Point(x - (width / 2), y),
-    new Point(x, y - (height / 2))
-  ];
+	var connectorPoints = [
+		new Point(x + (width / 2), y),
+		new Point(x, y + (height / 2)),
+		new Point(x - (width / 2), y),
+		new Point(x, y - (height / 2))
+	];
 
-  connectorPoints.forEach(function(point, index){
-    connectorSymbol.position = point;
-    connectorGroup.addChild(connectorSymbol);
-  });
+	var connectorGroup = new Group({
+		visible: false
+	});
 
-  return connectorGroup;
+	var connectorSymbolDefinition = new SymbolDefinition(connectorSymbol);
+
+	connectorPoints.forEach(function(point){
+		connectorGroup.addChild(new SymbolItem(connectorSymbolDefinition, point));
+	});
+
+	return connectorGroup;
 }
-
-var eventGroup = new Group();
 
 function drawEvent(x, y){
-  var eventDiameter = 40;
-  var eventRadius = ( eventDiameter / 2 );
 
-  console.debug('yo');
-  console.log('yo');
-  var eventSymbol = new Path.Circle({
-    radius: eventRadius,
-    center: [x, y],
-    strokeWidth: 2,
-    strokeColor: 'black',
-    fillColor: 'white',
-    type:'event',
-    subtype: ''
-  });
+	var eventDiameter = 40;
+	var eventRadius = ( eventDiameter / 2 );
 
-  eventConnectors = makeConnectors(x, y, eventDiameter, eventDiameter);
+	var eventSymbol = new Path.Circle({
+		radius: eventRadius,
+		center: [x, y],
+		strokeWidth: 2,
+		strokeColor: 'black',
+		fillColor: 'white',
+		type:'event',
+		subtype: ''
+	});
 
-  eventGroup.addChildren([
-    eventSymbol,
-    eventConnectors
-  ]);
+	var eventConnectors = makeConnectors(x, y, eventDiameter, eventDiameter);
 
-  var eventGroupSymbolDefinition = new SymbolDefinition(eventGroup);
+	var eventGroup = new Group({
+		children: [eventSymbol, eventConnectors],
+		name: 'eventGoup'
+	});
 
-  return new SymbolItem(eventGroupSymbolDefinition, [x, y]);
+	var eventGroupSymbolDefinition = new SymbolDefinition(eventGroup);
+	var eventGroupSymbolItem = new SymbolItem (eventGroupSymbolDefinition, [x, y]);
+
+	eventGroupSymbolItem.onMouseEnter = function eventGrouponMouseEnter(){
+		console.log(this.definition.item[1]);
+		// this.defnition.item.children[1].visible = true;
+	};
+	eventGroupSymbolItem.onMouseLeave = function eventGrouponMouseLeave(){
+		console.log(this.definition.item[1]);
+		// this.defnition.item.children[1].visible = false;
+	};
+
+	return eventGroupSymbolItem;
 }
-//
-// eventGroup.onMouseEnter = function(){
-//   this.children[1].visible = true;
-// };
-// eventGroup.onMouseLeave = function(){
-//   this.children[1].visible = false;
-// };
-
 (function() {
   var eventTriggers = document.querySelectorAll('.element');
 

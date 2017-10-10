@@ -31,3 +31,18 @@
     cursor: pointer;
   }
 }
+.props-menu{
+	position: fixed;
+	z-index: 100;
+	top: 50%;
+	right: 0;
+	transform: translate(100%, -50%);
+	&.open{
+		transform: translate(0%, -50%);
+	}
+	.props-menu-wrap{
+		.prop-option{
+
+		}
+	}
+}

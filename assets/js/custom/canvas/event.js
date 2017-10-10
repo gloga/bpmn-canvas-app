@@ -1,6 +1,6 @@
 function drawEvent(x, y){
 
-	var eventDiameter = 40;
+	var eventDiameter = 50;
 	var eventRadius = ( eventDiameter / 2 );
 
 	var eventSymbol = new Path.Circle({
@@ -10,26 +10,38 @@ function drawEvent(x, y){
 		strokeColor: 'black',
 		fillColor: 'white',
 		type:'event',
+		name:'event',
+		userName: '',
 		subtype: ''
+	});
+
+	var eventText = new PointText ({
+		fontSize: 16,
+		fillColor: 'black',
+		justification: 'center',
+		name: 'elementText',
+		point: [x, y + eventDiameter]
 	});
 
 	var eventConnectors = makeConnectors(x, y, eventDiameter, eventDiameter);
 
 	var eventGroup = new Group({
-		children: [eventSymbol, eventConnectors],
-		name: 'eventGoup'
+		children: [eventSymbol, eventText, eventConnectors],
+		name: 'eventGroup'
 	});
 
 	var eventGroupSymbolDefinition = new SymbolDefinition(eventGroup);
 	var eventGroupSymbolItem = new SymbolItem (eventGroupSymbolDefinition, [x, y]);
 
-	eventGroupSymbolItem.onMouseEnter = function eventGrouponMouseEnter(){
-		console.log(this.definition.item[1]);
-		// this.defnition.item.children[1].visible = true;
+	eventGroupSymbolItem.onMouseEnter = function(){
+		this.definition.item.children['connectorGroup'].visible = true;
 	};
-	eventGroupSymbolItem.onMouseLeave = function eventGrouponMouseLeave(){
-		console.log(this.definition.item[1]);
-		// this.defnition.item.children[1].visible = false;
+	eventGroupSymbolItem.onMouseLeave = function(){
+		this.definition.item.children['connectorGroup'].visible = false;
+	};
+
+	eventGroupSymbolItem.onMouseDrag = function (event) {
+		this.position += event.delta;
 	};
 
 	return eventGroupSymbolItem;

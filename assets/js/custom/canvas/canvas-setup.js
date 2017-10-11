@@ -35,10 +35,28 @@ eventOptions.forEach(function (eventOption) {
 project.view.onMouseUp = function (event) {
 	if (elementType === 'event') {
 		drawEvent(event.point.x, event.point.y);
+		insertProps();
 		elementType = '';
 	} else if (elementType === 'activity') {
 		drawActivity(event.point.x, event.point.y);
+		insertProps();
 		elementType = '';
 	}
-	console.log(project.activeLayer.children);
 };
+
+function insertProps(){
+	var menu = document.querySelector('.props-menu');
+	var menuNameInput = menu.querySelector('.prop-input');
+	var menuNameSubmit = menu.querySelector('.prop-submit');
+
+	menu.classList.add('open');
+	menuNameInput.focus();
+
+	var lastItem = project.activeLayer.lastChild;
+	console.log(lastItem.definition.item.children);
+
+	menuNameSubmit.addEventListener('click', function(){
+		lastItem.definition.item.children['elementText'].content = menuNameInput.value;
+		// menuNameInput.value = '';
+	});
+}

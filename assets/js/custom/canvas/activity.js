@@ -1,34 +1,52 @@
-
 function drawActivity(x, y){
+
 	var activityWidth = 100;
-  var activityHeight = 50;
+	var activityHeight = 50;
 
-  var activitySymbol = new Path.Rectangle({
-		width: activityWidth,
-    height: activityHeight,
-    strokeWidth: 2,
-    strokeColor: 'black',
-    fillColor: 'white',
-    type:'activity',
-    subtype: ''
-  });
+	var activitySymbol = new Path.Rectangle({
+		rectangle: {
+			x: x - ( activityWidth / 2 ),
+			y: y - (activityHeight / 2 ),
+			width: activityWidth,
+			height: activityHeight
+		},
+		strokeWidth: 2,
+		strokeColor: 'black',
+		fillColor: 'white',
+		type: 'activity',
+		name: 'activity',
+		userName: '',
+		subtype: ''
+	});
 
-  activityConnectors = makeConnectors(x, y, activityWidth, activityHeight);
+	var activityText = new PointText({
+		fontSize: 18,
+		fillColor: 'black',
+		justification: 'center',
+		name: 'elementText',
+		point: [x, y + activityHeight]
+	});
 
-	var activityGroup = new Group();
-  activityGroup.addChildren([
-		activitySymbol,
-    activityConnectors
-  ]);
+	var activityConnectors = makeConnectors(x, y, activityWidth, activityHeight);
 
-  var activityGroupSymbolDefinition = new SymbolDefinition(activityGroup);
+	var activityGroup = new Group({
+		children: [activitySymbol, activityText, activityConnectors],
+		name: 'activtyGroup'
+	});
 
-  return new SymbolItem(activityGroupSymbolDefinition);
+	var activityGroupSymbolDefinition = new SymbolDefinition(activityGroup);
+	var activityGroupSymbolItem = new SymbolItem(activityGroupSymbolDefinition, [x, y]);
+
+	activityGroupSymbolItem.onMouseEnter = function () {
+		this.definition.item.children['connectorGroup'].visible = true;
+	};
+	activityGroupSymbolItem.onMouseLeave = function () {
+		this.definition.item.children['connectorGroup'].visible = false;
+	};
+
+	activityGroupSymbolItem.onMouseDrag = function (event) {
+		this.position += event.delta;
+	};
+
+	return activityGroupSymbolItem;
 }
-
-// activityGroup.onMouseEnter = function(){
-//   this.children[1].visible = true;
-// };
-// activityGroup.onMouseLeave = function(){
-//   this.children[1].visible = false;
-// };

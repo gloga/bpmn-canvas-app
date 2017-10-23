@@ -48,5 +48,5 @@ function drawActivity(x, y){
 		this.position += event.delta;
 	};
 
-	return activityGroupSymbolItem;
+	// return activityGroupSymbolItem;
 }

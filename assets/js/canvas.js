@@ -48,75 +48,99 @@ function drawActivity(x, y){
 		this.position += event.delta;
 	};
 
-	return activityGroupSymbolItem;
+	// return activityGroupSymbolItem;
 }
 
-var elementType = '';
+( function () {
 
-tool.minDistance = 10;
+	var elementType = '';
 
-// tool.onMouseDrag = function(event){
-//   // console.log(project.view);
-// 	// console.log(event);
-// };
+	tool.minDistance = 10;
 
-// function onMouseMove (event){
-//   // console.log(event.point);
+	window.addEventListener('wheel', function (e) {
+		e.preventDefault();
+
+		var scrollDistance = e.deltaY;
+		if (scrollDistance > 0) {
+			project.view.zoom -= 0.02;
+		} else {
+			project.view.zoom += 0.02;
+		}
+	});
+
+
+	var eventOptions = document.querySelectorAll('.element-option');
+
+	eventOptions.forEach(function (eventOption) {
+		eventOption.onclick = function () {
+			elementType = this.getAttribute('data-type');
+		};
+	});
+
+	project.view.onMouseUp = function (event) {
+		if (elementType !== '') {
+			if (elementType === 'event') {
+				drawEvent(event.point.x, event.point.y);
+				// insertProps(project.activeLayer.lastChild);
+				elementType = '';
+			} else if (elementType === 'activity') {
+				drawActivity(event.point.x, event.point.y);
+				// insertProps(project.activeLayer.lastChild);
+				elementType = '';
+			}
+			insertProps(project.activeLayer.lastChild);
+		}
+	};
+
+} )()
+
+//////////////////////////////// TEST /////////////////////
+
+
+// var vectorStart, vector, vectorPrevious, vectorItem;
+
+// function processVector(event) {
+// 	vector = event.point - vectorStart; // Create vector
+
+// 	drawVector();
 // }
 
+// function drawVector() {
 
-window.addEventListener('wheel', function (e) {
-	e.preventDefault();
-
-	var scrollDistance = e.deltaY;
-	if (scrollDistance > 0) {
-		project.view.zoom -= 0.02;
-	} else {
-		project.view.zoom += 0.02;
-	}
-});
+// 	if (vectorItem){
+// 		vectorItem.remove();
+// 	}
+// 	var arrowVector = vector.normalize(10);
 
 
-var eventOptions = document.querySelectorAll('.element-option');
+// 	var end = vectorStart + vector;
+// 	vectorItem = new Group([
+// 		new Path([vectorStart, end]),
+// 		new Path([
+// 			end + arrowVector.rotate(135),
+// 			end,
+// 			end + arrowVector.rotate(-135)
+// 		])
+// 	]);
+// 	vectorItem.strokeColor = '#e4141b';
+// }
 
-eventOptions.forEach(function (eventOption) {
-	eventOption.onclick = function () {
-		elementType = this.getAttribute('data-type');
-	};
-});
+// function onMouseDown(event){
+// 	vectorStart = event.point;
+// }
+// function onMouseDrag(event){
+// 	processVector(event);
+// }
+// function onMouseUp(event){
+// 	var end = vectorStart + vector;
+// 	// processVector(event);
 
-project.view.onMouseUp = function (event) {
-	if (elementType === 'event') {
-		drawEvent(event.point.x, event.point.y);
-		insertProps();
-		elementType = '';
-	} else if (elementType === 'activity') {
-		drawActivity(event.point.x, event.point.y);
-		insertProps();
-		elementType = '';
-	}
-};
-
-function insertProps(){
-	var menu = document.querySelector('.props-menu');
-	var menuNameInput = menu.querySelector('.prop-input');
-	var menuNameSubmit = menu.querySelector('.prop-submit');
-
-	menu.classList.add('open');
-	menuNameInput.focus();
-
-	var lastItem = project.activeLayer.lastChild;
-	console.log(lastItem.definition.item.children);
-
-	menuNameSubmit.addEventListener('click', function(){
-		lastItem.definition.item.children['elementText'].content = menuNameInput.value;
-		// menuNameInput.value = '';
-	});
-}
+// 	vectorPrevious = vectorItem.clone();
+// }
 function makeConnectors (x, y, width, height){
 
 	var connectorSymbol = new Path.Circle({
-		radius: 4,
+		radius: 6,
 		fillColor: 'grey',
 		type: 'connector',
 		name: 'connector'
@@ -130,11 +154,11 @@ function makeConnectors (x, y, width, height){
 	];
 
 	var connectorGroup = new Group({
-		visible: false,
+		// visible: false,
 		name: 'connectorGroup'
 	});
 
-	var connectorSymbolDefinition = new SymbolDefinition(connectorSymbol);
+	var connectorSymbolDefinition = new Symbol(connectorSymbol);
 
 	connectorPoints.forEach(function(point, index){
 		connectorGroup.addChild( new SymbolItem(connectorSymbolDefinition, point) );
@@ -143,12 +167,112 @@ function makeConnectors (x, y, width, height){
 	return connectorGroup;
 }
 
+
+
+
+
+
+function addConnectorEvents(){
+
+	var connectorGroups = project.getItems({
+		class: Group,
+		name: 'connectorGroup'
+	});
+	console.log( connectorGroups );
+
+	connectorGroups.forEach(function(connectorGroup){
+
+		connectorGroup.onClick = function (e){
+			var oneConnector = this.hitTest(e.point);
+
+			if(oneConnector){
+
+				drawConnection(e, oneConnector.item);
+
+
+				// console.log( oneConnector.item.bounds.center );
+			}
+		};
+	});
+
+	project.view.onMouseMove = function (e){
+		e.stop();
+
+		// console.log( this );
+		drawConnection(e);
+
+		// var oneConnector = connectorGroup.hitTest(e.point);
+		// if (oneConnector) {
+			// 		console.log( 'yes' );
+			// 	// 	end = oneConnector.item.bounds.center;
+			// 	}
+		}
+
+		// connectorGroup.onMouseUp = function (e){
+
+			// 	// vectorPrevious = vectorItem.clone();
+			// 	var oneConnector = this.hitTest(e.point);
+			// 	// console.log( oneConnector );
+			// 	if (oneConnector) {
+				// 		console.log( oneConnector );
+				// 		// drawConnection(e, oneConnector.item);
+
+				// 	}
+				// 	else{
+					// 		// console.log( 'no' );
+					// 		// vectorItem.remove();
+					// 	}
+					// }
+
+					var vectorStart, vector, vectorPrevious, vectorItem;
+
+					var clickStart = false;
+					function drawConnection(event, item){
+						// console.log(event );
+						if (event.type === 'click'){
+							console.log( clickStart );
+							if (!clickStart) {
+								vectorStart = item.bounds.center;
+								var fromItem = item;
+								clickStart = true;
+							}
+							else{
+								end = item.bounds.center;
+								vectorPrevious = vectorItem.clone();
+								clickStart = false;
+							}
+						}
+						else if (event.type === 'mousemove'){
+							vector = event.point - vectorStart; // Create vector
+
+							if (vectorItem) {
+								vectorItem.remove();
+							}
+							var arrowVector = vector.normalize(10);
+
+							var end = vectorStart + vector;
+
+							vectorItem = new Group({
+								children: [
+									new Path([vectorStart, end]),
+									new Path([ end + arrowVector.rotate(135), end, end + arrowVector.rotate(-135)])
+								],
+								name: 'connection'
+							});
+							vectorItem.strokeColor = 'blue';
+						}
+						else if (event.type === 'mouseup'){
+							console.log( 'yes' );
+						}
+					}
+
+			}
 function drawEvent(x, y){
 
 	var eventDiameter = 50;
 	var eventRadius = ( eventDiameter / 2 );
 
-	var eventSymbol = new Path.Circle({
+	var event = new Path.Circle({
 		radius: eventRadius,
 		center: [x, y],
 		strokeWidth: 2,
@@ -160,6 +284,9 @@ function drawEvent(x, y){
 		subtype: ''
 	});
 
+	var eventSymbol = new Symbol(event);
+	var eventSymbolItem = eventSymbol.place([x, y]);
+
 	var eventText = new PointText ({
 		fontSize: 16,
 		fillColor: 'black',
@@ -169,27 +296,63 @@ function drawEvent(x, y){
 	});
 
 	var eventConnectors = makeConnectors(x, y, eventDiameter, eventDiameter);
+	addConnectorEvents();
 
 	var eventGroup = new Group({
-		children: [eventSymbol, eventText, eventConnectors],
+		children: [
+			eventSymbolItem,
+			eventText,
+			eventConnectors,
+			// test
+		],
 		name: 'eventGroup'
 	});
 
-	var eventGroupSymbolDefinition = new SymbolDefinition(eventGroup);
-	var eventGroupSymbolItem = new SymbolItem (eventGroupSymbolDefinition, [x, y]);
+	// eventGroup.bounds.width *= 1.5;
+	// eventGroup.bounds.height *= 1.5;
+	// console.log(eventGroup.bounds );
 
-	eventGroupSymbolItem.onMouseEnter = function(){
-		this.definition.item.children['connectorGroup'].visible = true;
+
+	eventGroup.firstChild.onClick = function (event) {
+		this.selected = true;
 	};
-	eventGroupSymbolItem.onMouseLeave = function(){
-		this.definition.item.children['connectorGroup'].visible = false;
+	eventGroup.firstChild.onDoubleClick = function (event) {
+		this.selected = false;
+	};
+	eventGroup.firstChild.onMouseDrag = function (event) {
+		if(this.selected){
+			this.parent.position += event.delta;
+		}
 	};
 
-	eventGroupSymbolItem.onMouseDrag = function (event) {
-		this.position += event.delta;
+	eventGroup.onMouseEnter = function(){
+		// this.children['connectorGroup'].visible = true;
+	};
+	eventGroup.onMouseLeave = function(){
+		// this.children['connectorGroup'].visible = false;
 	};
 
-	return eventGroupSymbolItem;
+	// return eventGroupSymbolItem;
+}
+function insertProps(lastItem) {
+	// console.log(lastItem);
+	var menu = document.querySelector('.props-menu');
+	var menuNameInput = menu.querySelector('.prop-input');
+	var menuNameSubmit = menu.querySelector('.prop-submit');
+
+	menu.classList.add('open');
+	menuNameInput.focus();
+
+	menuNameSubmit.addEventListener('click', function () {
+		// console.log(menuNameInput.value);
+
+		lastItem.definition.item.children['elementText'].content = menuNameInput.value;
+
+		menuNameInput.value = '';
+		menu.classList.remove('open');
+	}, { once: true });
+
+	return;
 }
 (function() {
   var eventTriggers = document.querySelectorAll('.element');

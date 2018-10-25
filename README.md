@@ -1,6 +1,7 @@
 # Process Graph Canavas app
 
-Barebones canvas app that can draw some basic process elements and some basic connections between them.
+Barebones canvas app that can draw some basic process elements and some basic connections between them. Paper JS was used as a wrapper for canvas.
+Elements can be moved around and all of their connections will follow along. Elements can be named and their labels wil also folow while being moved
 
 ## Resources
 

@@ -1,8 +1,8 @@
-# Web aplikacija za modeliranje poslovnih procesa
+# Process Graph Canavas app
 
-U radu će biti opisane osnove BPMN 2.0, te osnovne mogućnosti HTML Canvas elementa. Praktični dio rada obuhvaćati će Web aplikaciju za crtanje modela procesa, realizirana pomoću HTML 5 Canvas tehnologije. Aplikacija će također omogućavati analiziranje modela kroz tablični prikaz procesa i povezanih klasa.
+Barebones canvas app that can draw some basic process elements and some basic connections between them.
 
-## Resursi
+## Resources
 
 [HTML 5 Canvas YouTube tutorial](https://www.youtube.com/watch?v=EO6OkltgudE&list=PLpPnRKq7eNW3We9VdCfx9fprhqXHwTPXL)
 
